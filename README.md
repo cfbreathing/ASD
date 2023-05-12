@@ -46,7 +46,6 @@ pip install torch==1.8.0+cu111 torchvision==0.9.0+cu111 torchaudio==0.8.0 -f htt
 pip install -r requirements.txt
 ```
 [下载数据](https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz)并将其解压在 `dataset_dir ` 里，具体参考 `./config/baseline_asd.yaml` 
-Please download CIFAR-10 dataset from its official website and extract it to dataset_dir specified in the YAML configuration file.
 
 运行，在 BadNets 攻击下训练 ASD 模型
 ```shell

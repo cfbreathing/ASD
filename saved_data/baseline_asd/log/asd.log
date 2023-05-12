@@ -1,0 +1,1363 @@
+Start at: Thu May 11 01:40:05 2023 at: lwj
+===Prepare data===
+Load backdoor config:
+{'poison_ratio': 0.05, 'target_label': 3, 'badnets': {'trigger_path': './data/trigger/cifar_1.png'}}
+Training transformations:
+ {'pre': Compose(
+), 'primary': Compose(
+    RandomCrop(size=(32, 32), padding=4)
+    RandomHorizontalFlip(p=0.5)
+), 'remaining': Compose(
+    ToTensor()
+    Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.201])
+)}
+Test transformations:
+ {'pre': Compose(
+), 'primary': Compose(
+), 'remaining': Compose(
+    ToTensor()
+    Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.201])
+)}
+Load dataset from: ./data/datasets/cifar-10-batches-py
+Save poisoned index to ./saved_data\baseline_asd\poison_idx.npy
+
+===Setup training===
+Create network: {'resnet18_cifar': {'num_classes': 10}}
+Create criterion: CrossEntropyLoss() for test
+Create criterion: SCELoss() for data split
+Create criterion: MixMatchLoss() for semi-training
+Create optimizer: Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.002
+    weight_decay: 0
+)
+Create scheduler: None
+Training from scratch.
+===Epoch: 1/60===
+Mining clean data by class-aware loss-guided split...
+0.0/100.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 2.31033 | 2.31033 | 0.00711 |    0.00000 |
+| 341/1024    | 1.00572 | 1.00484 | 0.01054 |    0.08325 |
+| 682/1024    | 0.61548 | 0.61357 | 0.01150 |    0.16650 |
+| 1023/1024   | 0.92976 | 0.92631 | 0.01383 |    0.24976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 1.25808 | 1.25604 | 0.01572 |    0.12488 | 628.97799 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 2.21471 | 0.28125 |
+| 78/157      | 2.42632 | 0.21875 |
+| 156/157     | 2.14154 | 0.31250 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 2.28143 | 0.30125 | 19.72838 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.14868 | 0.12500 |
+| 70/141      | 3.20097 | 0.09375 |
+| 140/141     | 3.21783 | 0.10000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.18551 | 0.08980 | 20.14124 |
+Best test accuaracy 0.30125398089171973 in epoch 1
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 2/60===
+Mining clean data by class-aware loss-guided split...
+0.0/100.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.02737 | 1.02290 | 0.01789 |    0.25000 |
+| 341/1024    | 1.65204 | 1.64536 | 0.02007 |    0.33325 |
+| 682/1024    | 0.71233 | 0.70717 | 0.01239 |    0.41650 |
+| 1023/1024   | 1.13253 | 1.12209 | 0.02088 |    0.49976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.98980 | 0.98382 | 0.01599 |    0.37488 | 689.28332 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 2.23662 | 0.28125 |
+| 78/157      | 2.17954 | 0.34375 |
+| 156/157     | 2.18299 | 0.25000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 2.12827 | 0.33061 | 20.11632 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.63240 | 0.12500 |
+| 70/141      | 3.49360 | 0.06250 |
+| 140/141     | 3.41953 | 0.10000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.40170 | 0.09512 | 20.11399 |
+Best test accuaracy 0.33061305732484075 in epoch 2
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 3/60===
+Mining clean data by class-aware loss-guided split...
+0.0/100.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.85131 | 0.84474 | 0.01313 |    0.50000 |
+| 341/1024    | 1.21674 | 1.20577 | 0.01881 |    0.58325 |
+| 682/1024    | 0.37683 | 0.36876 | 0.01211 |    0.66650 |
+| 1023/1024   | 1.53921 | 1.52481 | 0.01921 |    0.74976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.95230 | 0.94275 | 0.01527 |    0.62488 | 744.16004 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 2.08481 | 0.32812 |
+| 78/157      | 2.14251 | 0.32812 |
+| 156/157     | 2.20730 | 0.31250 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 2.12418 | 0.33151 | 16.06014 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.41449 | 0.09375 |
+| 70/141      | 3.27531 | 0.07812 |
+| 140/141     | 3.32030 | 0.10000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.43100 | 0.06410 | 14.87993 |
+Best test accuaracy 0.3315087579617834 in epoch 3
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 4/60===
+Mining clean data by class-aware loss-guided split...
+0.0/100.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.65972 | 0.65210 | 0.01016 |    0.75000 |
+| 341/1024    | 0.46925 | 0.45790 | 0.01363 |    0.83325 |
+| 682/1024    | 1.21590 | 1.20214 | 0.01502 |    0.91650 |
+| 1023/1024   | 0.62473 | 0.61076 | 0.01397 |    0.99976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.91506 | 0.90224 | 0.01466 |    0.87488 | 618.39156 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 2.07670 | 0.29688 |
+| 78/157      | 2.11676 | 0.34375 |
+| 156/157     | 1.97619 | 0.31250 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 2.04349 | 0.34315 | 15.57523 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.78475 | 0.06250 |
+| 70/141      | 3.76982 | 0.06250 |
+| 140/141     | 3.59833 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.74619 | 0.05098 | 15.20006 |
+Best test accuaracy 0.3431528662420382 in epoch 4
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 5/60===
+Mining clean data by class-aware loss-guided split...
+0.0/100.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.47232 | 0.46067 | 0.01165 |    1.00000 |
+| 341/1024    | 0.76308 | 0.75298 | 0.00933 |    1.08325 |
+| 682/1024    | 1.18286 | 1.16064 | 0.01905 |    1.16650 |
+| 1023/1024   | 0.28385 | 0.26970 | 0.01132 |    1.24976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.89644 | 0.88033 | 0.01432 |    1.12488 | 702.08294 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.89386 | 0.45312 |
+| 78/157      | 2.09822 | 0.29688 |
+| 156/157     | 2.29196 | 0.25000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 2.12165 | 0.34863 | 17.28403 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.80794 | 0.06250 |
+| 70/141      | 3.67964 | 0.06250 |
+| 140/141     | 3.65126 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.85274 | 0.05142 | 15.37218 |
+Best test accuaracy 0.3486265923566879 in epoch 5
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 6/60===
+Mining clean data by class-aware loss-guided split...
+2.0/200.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.74122 | 0.72756 | 0.01093 |    1.25000 |
+| 341/1024    | 1.19359 | 1.16836 | 0.01893 |    1.33325 |
+| 682/1024    | 1.23490 | 1.21084 | 0.01699 |    1.41650 |
+| 1023/1024   | 0.15577 | 0.13391 | 0.01458 |    1.49976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.91612 | 0.89587 | 0.01474 |    1.37488 | 601.81398 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 2.02102 | 0.43750 |
+| 78/157      | 2.13681 | 0.43750 |
+| 156/157     | 1.56381 | 0.43750 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 2.01366 | 0.39222 | 15.40193 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.79906 | 0.07812 |
+| 70/141      | 4.01983 | 0.04688 |
+| 140/141     | 3.92165 | 0.00000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.81092 | 0.06461 | 14.97895 |
+Best test accuaracy 0.3922173566878981 in epoch 6
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 7/60===
+Mining clean data by class-aware loss-guided split...
+0.0/200.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.60759 | 0.59078 | 0.01121 |    1.50000 |
+| 341/1024    | 1.11312 | 1.09576 | 0.01096 |    1.58325 |
+| 682/1024    | 1.10426 | 1.07507 | 0.01751 |    1.66650 |
+| 1023/1024   | 0.61315 | 0.59620 | 0.00969 |    1.74976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.87472 | 0.85155 | 0.01426 |    1.62488 | 740.66202 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.86524 | 0.46875 |
+| 78/157      | 2.01749 | 0.39062 |
+| 156/157     | 1.72044 | 0.50000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.97010 | 0.39849 | 35.87528 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.83426 | 0.10938 |
+| 70/141      | 3.95026 | 0.07812 |
+| 140/141     | 3.50152 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.78038 | 0.08234 | 33.64020 |
+Best test accuaracy 0.3984872611464968 in epoch 7
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 8/60===
+Mining clean data by class-aware loss-guided split...
+0.0/200.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.60951 | 0.59052 | 0.01085 |    1.75000 |
+| 341/1024    | 1.16930 | 1.14316 | 0.01426 |    1.83325 |
+| 682/1024    | 1.21799 | 1.18181 | 0.01888 |    1.91650 |
+| 1023/1024   | 1.22145 | 1.18798 | 0.01674 |    1.99976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.90653 | 0.87964 | 0.01436 |    1.87488 | 1077.58491 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.84665 | 0.45312 |
+| 78/157      | 1.89756 | 0.40625 |
+| 156/157     | 1.78975 | 0.43750 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.90206 | 0.41232 | 39.35793 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.47216 | 0.07812 |
+| 70/141      | 3.54099 | 0.06250 |
+| 140/141     | 3.30032 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.38068 | 0.08566 | 34.39706 |
+Best test accuaracy 0.41232085987261147 in epoch 8
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 9/60===
+Mining clean data by class-aware loss-guided split...
+2.0/200.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.95089 | 0.92911 | 0.01089 |    2.00000 |
+| 341/1024    | 1.20069 | 1.16651 | 0.01641 |    2.08325 |
+| 682/1024    | 1.21359 | 1.17528 | 0.01768 |    2.16650 |
+| 1023/1024   | 1.28528 | 1.24184 | 0.01931 |    2.24976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.88854 | 0.85886 | 0.01397 |    2.12488 | 717.95268 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.72309 | 0.46875 |
+| 78/157      | 1.78679 | 0.40625 |
+| 156/157     | 1.48250 | 0.37500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.85917 | 0.42168 | 17.47995 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.32120 | 0.07812 |
+| 70/141      | 3.42477 | 0.06250 |
+| 140/141     | 3.14562 | 0.20000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.29156 | 0.11268 | 15.54593 |
+Best test accuaracy 0.42167595541401276 in epoch 9
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 10/60===
+Mining clean data by class-aware loss-guided split...
+0.0/200.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.15131 | 1.12258 | 0.01277 |    2.25000 |
+| 341/1024    | 0.09608 | 0.07659 | 0.00835 |    2.33325 |
+| 682/1024    | 0.43534 | 0.41992 | 0.00638 |    2.41650 |
+| 1023/1024   | 0.95490 | 0.91593 | 0.01559 |    2.49976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.87870 | 0.84688 | 0.01340 |    2.37488 | 644.22320 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.76299 | 0.48438 |
+| 78/157      | 2.02855 | 0.39062 |
+| 156/157     | 1.51175 | 0.50000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.95482 | 0.42894 | 17.56640 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.09097 | 0.06250 |
+| 70/141      | 4.15458 | 0.06250 |
+| 140/141     | 3.96731 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.02438 | 0.05496 | 16.06590 |
+Best test accuaracy 0.4289410828025478 in epoch 10
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 11/60===
+Mining clean data by class-aware loss-guided split...
+0.0/300.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.25882 | 0.23701 | 0.00872 |    2.50000 |
+| 341/1024    | 1.44333 | 1.39774 | 0.01765 |    2.58325 |
+| 682/1024    | 0.85583 | 0.81937 | 0.01367 |    2.66650 |
+| 1023/1024   | 1.29087 | 1.24189 | 0.01781 |    2.74976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.84682 | 0.81190 | 0.01331 |    2.62488 | 657.60320 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.66797 | 0.45312 |
+| 78/157      | 1.80314 | 0.43750 |
+| 156/157     | 1.59504 | 0.50000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.81211 | 0.45293 | 17.71335 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.38547 | 0.09375 |
+| 70/141      | 3.55859 | 0.01562 |
+| 140/141     | 3.34543 | 0.15000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.38544 | 0.08772 | 16.42202 |
+Best test accuaracy 0.45292595541401276 in epoch 11
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 12/60===
+Mining clean data by class-aware loss-guided split...
+0.0/300.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.47911 | 0.44850 | 0.01113 |    2.75000 |
+| 341/1024    | 1.28889 | 1.23932 | 0.01750 |    2.83325 |
+| 682/1024    | 0.78986 | 0.75255 | 0.01279 |    2.91650 |
+| 1023/1024   | 1.18201 | 1.12778 | 0.01808 |    2.99976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.86948 | 0.83038 | 0.01360 |    2.87488 | 650.34050 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.76563 | 0.45312 |
+| 78/157      | 1.83040 | 0.45312 |
+| 156/157     | 1.92588 | 0.31250 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.97038 | 0.43133 | 16.49774 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.69800 | 0.12500 |
+| 70/141      | 3.60401 | 0.06250 |
+| 140/141     | 3.48544 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.63088 | 0.08810 | 16.68506 |
+Best test accuaracy 0.45292595541401276 in epoch 11
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 13/60===
+Mining clean data by class-aware loss-guided split...
+2.0/300.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.84557 | 0.80809 | 0.01250 |    3.00000 |
+| 341/1024    | 1.19290 | 1.13361 | 0.01923 |    3.08325 |
+| 682/1024    | 0.65039 | 0.61667 | 0.01065 |    3.16650 |
+| 1023/1024   | 0.93615 | 0.89164 | 0.01370 |    3.24976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.86975 | 0.82744 | 0.01355 |    3.12488 | 644.04447 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.73870 | 0.46875 |
+| 78/157      | 1.68219 | 0.50000 |
+| 156/157     | 1.60995 | 0.43750 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.83834 | 0.45770 | 17.15405 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.29383 | 0.14062 |
+| 70/141      | 3.57202 | 0.06250 |
+| 140/141     | 3.49757 | 0.15000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.36157 | 0.10590 | 17.39409 |
+Best test accuaracy 0.457703025477707 in epoch 13
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 14/60===
+Mining clean data by class-aware loss-guided split...
+2.0/300.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.19599 | 0.17100 | 0.00769 |    3.25000 |
+| 341/1024    | 0.59903 | 0.57441 | 0.00738 |    3.33325 |
+| 682/1024    | 0.93564 | 0.90001 | 0.01043 |    3.41650 |
+| 1023/1024   | 0.78232 | 0.74281 | 0.01129 |    3.49976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.85271 | 0.80832 | 0.01315 |    3.37488 | 671.85673 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.66523 | 0.51562 |
+| 78/157      | 1.84155 | 0.43750 |
+| 156/157     | 1.85845 | 0.50000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.87434 | 0.45939 | 19.28977 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.19505 | 0.14062 |
+| 70/141      | 3.29789 | 0.09375 |
+| 140/141     | 3.25050 | 0.17500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.28896 | 0.12425 | 17.35550 |
+Best test accuaracy 0.4593949044585987 in epoch 14
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 15/60===
+Mining clean data by class-aware loss-guided split...
+0.0/300.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.39645 | 1.35806 | 0.01097 |    3.50000 |
+| 341/1024    | 0.28439 | 0.25866 | 0.00718 |    3.58325 |
+| 682/1024    | 0.70495 | 0.66687 | 0.01039 |    3.66650 |
+| 1023/1024   | 0.82823 | 0.77641 | 0.01382 |    3.74976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.84118 | 0.79433 | 0.01292 |    3.62488 | 646.26033 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.67709 | 0.57812 |
+| 78/157      | 1.89603 | 0.48438 |
+| 156/157     | 1.69567 | 0.43750 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.91089 | 0.47422 | 17.31522 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.44735 | 0.03125 |
+| 70/141      | 4.62207 | 0.04688 |
+| 140/141     | 4.48798 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.52001 | 0.05851 | 15.98296 |
+Best test accuaracy 0.4742237261146497 in epoch 15
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 16/60===
+Mining clean data by class-aware loss-guided split...
+0.0/400.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.18673 | 0.15022 | 0.00974 |    3.75000 |
+| 341/1024    | 0.72618 | 0.67437 | 0.01352 |    3.83325 |
+| 682/1024    | 1.19951 | 1.13310 | 0.01696 |    3.91650 |
+| 1023/1024   | 1.30941 | 1.23745 | 0.01799 |    3.99976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.87641 | 0.82486 | 0.01331 |    3.87488 | 643.56651 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.56008 | 0.53125 |
+| 78/157      | 1.78609 | 0.51562 |
+| 156/157     | 1.49836 | 0.56250 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.84749 | 0.46547 | 17.45078 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.72250 | 0.06250 |
+| 70/141      | 3.71734 | 0.07812 |
+| 140/141     | 3.71258 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.72555 | 0.08965 | 17.23129 |
+Best test accuaracy 0.4742237261146497 in epoch 15
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 17/60===
+Mining clean data by class-aware loss-guided split...
+2.0/400.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.14355 | 1.08528 | 0.01457 |    4.00000 |
+| 341/1024    | 1.32851 | 1.25149 | 0.01886 |    4.08325 |
+| 682/1024    | 0.93939 | 0.90146 | 0.00910 |    4.16650 |
+| 1023/1024   | 1.31149 | 1.23822 | 0.01724 |    4.24976 |
+MixMatch training summary:
+|---------|---------|---------|------------|-----------|
+|    loss |   xloss |   uloss |   lambda_u |      time |
+|---------|---------|---------|------------|-----------|
+| 0.86731 | 0.81421 | 0.01288 |    4.12488 | 680.58249 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.54936 | 0.50000 |
+| 78/157      | 1.80858 | 0.50000 |
+| 156/157     | 1.54232 | 0.50000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.80493 | 0.47621 | 21.42927 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.68320 | 0.04688 |
+| 70/141      | 3.80740 | 0.04688 |
+| 140/141     | 3.55676 | 0.17500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.73856 | 0.07737 | 20.79031 |
+Best test accuaracy 0.4762141719745223 in epoch 17
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 18/60===
+Mining clean data by class-aware loss-guided split...
+1.0/400.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.76395 | 0.71658 | 0.01114 |    4.25000 |
+| 341/1024    | 0.07161 | 0.04459 | 0.00624 |    4.33325 |
+| 682/1024    | 0.24123 | 0.20854 | 0.00740 |    4.41650 |
+| 1023/1024   | 1.27349 | 1.20939 | 0.01424 |    4.49976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.84163 | 0.78566 | 0.01279 |    4.37488 | 2044.24682 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.40233 | 0.60938 |
+| 78/157      | 1.79012 | 0.51562 |
+| 156/157     | 1.49761 | 0.50000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.82323 | 0.48477 | 64.52320 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.69526 | 0.07812 |
+| 70/141      | 3.80170 | 0.04688 |
+| 140/141     | 3.69266 | 0.17500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.62781 | 0.09632 | 58.17473 |
+Best test accuaracy 0.48477308917197454 in epoch 18
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 19/60===
+Mining clean data by class-aware loss-guided split...
+5.0/400.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.46158 | 1.38056 | 0.01800 |    4.50000 |
+| 341/1024    | 0.58149 | 0.54770 | 0.00737 |    4.58325 |
+| 682/1024    | 0.41213 | 0.36117 | 0.01092 |    4.66650 |
+| 1023/1024   | 0.64096 | 0.60553 | 0.00746 |    4.74976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.82316 | 0.76545 | 0.01248 |    4.62488 | 2414.14547 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.63144 | 0.51562 |
+| 78/157      | 1.79049 | 0.50000 |
+| 156/157     | 1.53357 | 0.43750 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.85696 | 0.47582 | 63.99525 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.90592 | 0.07812 |
+| 70/141      | 3.95655 | 0.04688 |
+| 140/141     | 4.03695 | 0.17500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.86446 | 0.09599 | 58.16451 |
+Best test accuaracy 0.48477308917197454 in epoch 18
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 20/60===
+Mining clean data by class-aware loss-guided split...
+3.0/400.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.02755 | 0.95700 | 0.01485 |    4.75000 |
+| 341/1024    | 1.22387 | 1.14802 | 0.01569 |    4.83325 |
+| 682/1024    | 0.85574 | 0.78150 | 0.01510 |    4.91650 |
+| 1023/1024   | 0.58312 | 0.54345 | 0.00793 |    4.99976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.82545 | 0.76514 | 0.01238 |    4.87488 | 2413.50767 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.80554 | 0.56250 |
+| 78/157      | 1.78283 | 0.51562 |
+| 156/157     | 1.43989 | 0.56250 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.90896 | 0.49532 | 63.92928 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.85572 | 0.09375 |
+| 70/141      | 3.99590 | 0.09375 |
+| 140/141     | 4.11229 | 0.10000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.98919 | 0.10233 | 57.87490 |
+Best test accuaracy 0.4953224522292994 in epoch 20
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 21/60===
+Mining clean data by class-aware loss-guided split...
+4.0/500.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.38812 | 1.30114 | 0.01740 |    5.00000 |
+| 341/1024    | 1.33484 | 1.25679 | 0.01535 |    5.08325 |
+| 682/1024    | 0.59671 | 0.54803 | 0.00942 |    5.16650 |
+| 1023/1024   | 0.90651 | 0.85137 | 0.01050 |    5.24976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.82914 | 0.76587 | 0.01235 |    5.12488 | 2414.09351 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.64791 | 0.59375 |
+| 78/157      | 2.09574 | 0.48438 |
+| 156/157     | 1.33112 | 0.62500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.92186 | 0.50139 | 63.93841 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.58074 | 0.10938 |
+| 70/141      | 4.37644 | 0.12500 |
+| 140/141     | 4.13775 | 0.07500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.41999 | 0.08774 | 57.96650 |
+Best test accuaracy 0.5013933121019108 in epoch 21
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 22/60===
+Mining clean data by class-aware loss-guided split...
+1.0/500.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.29740 | 1.19968 | 0.01861 |    5.25000 |
+| 341/1024    | 0.93494 | 0.86025 | 0.01400 |    5.33325 |
+| 682/1024    | 0.47526 | 0.43055 | 0.00825 |    5.41650 |
+| 1023/1024   | 0.13997 | 0.10704 | 0.00599 |    5.49976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.85342 | 0.78660 | 0.01243 |    5.37488 | 2413.98931 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.54880 | 0.57812 |
+| 78/157      | 1.95713 | 0.51562 |
+| 156/157     | 1.90262 | 0.56250 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.85187 | 0.49433 | 64.00397 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.58200 | 0.04688 |
+| 70/141      | 4.27937 | 0.04688 |
+| 140/141     | 4.63741 | 0.02500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.42794 | 0.05392 | 57.95575 |
+Best test accuaracy 0.5013933121019108 in epoch 21
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 23/60===
+Mining clean data by class-aware loss-guided split...
+1.0/500.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.81298 | 0.74803 | 0.01181 |    5.50000 |
+| 341/1024    | 0.71536 | 0.66357 | 0.00928 |    5.58325 |
+| 682/1024    | 1.10957 | 1.00416 | 0.01860 |    5.66650 |
+| 1023/1024   | 0.92944 | 0.84734 | 0.01428 |    5.74976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.82229 | 0.75419 | 0.01211 |    5.62488 | 2413.94690 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.49352 | 0.60938 |
+| 78/157      | 1.67814 | 0.56250 |
+| 156/157     | 1.35560 | 0.62500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.79034 | 0.49940 | 64.04482 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.21658 | 0.06250 |
+| 70/141      | 4.18461 | 0.09375 |
+| 140/141     | 4.22020 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.06459 | 0.08200 | 57.90023 |
+Best test accuaracy 0.5013933121019108 in epoch 21
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 24/60===
+Mining clean data by class-aware loss-guided split...
+2.0/500.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.69619 | 0.63958 | 0.00984 |    5.75000 |
+| 341/1024    | 1.20138 | 1.07435 | 0.02178 |    5.83325 |
+| 682/1024    | 0.83098 | 0.74569 | 0.01441 |    5.91650 |
+| 1023/1024   | 0.53198 | 0.48666 | 0.00755 |    5.99976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.82146 | 0.75041 | 0.01209 |    5.87488 | 2414.30347 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.51012 | 0.60938 |
+| 78/157      | 1.95446 | 0.46875 |
+| 156/157     | 1.08303 | 0.56250 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.80399 | 0.51154 | 63.99303 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.85153 | 0.09375 |
+| 70/141      | 3.94756 | 0.06250 |
+| 140/141     | 4.16372 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.80447 | 0.07159 | 57.93523 |
+Best test accuaracy 0.5115445859872612 in epoch 24
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 25/60===
+Mining clean data by class-aware loss-guided split...
+1.0/500.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.06226 | 0.97598 | 0.01438 |    6.00000 |
+| 341/1024    | 0.19109 | 0.13994 | 0.00841 |    6.08325 |
+| 682/1024    | 0.87232 | 0.80618 | 0.01072 |    6.16650 |
+| 1023/1024   | 0.25343 | 0.22234 | 0.00497 |    6.24976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.81907 | 0.74683 | 0.01180 |    6.12488 | 2413.63155 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.55573 | 0.57812 |
+| 78/157      | 1.92114 | 0.48438 |
+| 156/157     | 1.47318 | 0.43750 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.91490 | 0.50488 | 63.88449 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.27228 | 0.07812 |
+| 70/141      | 4.11946 | 0.07812 |
+| 140/141     | 4.28921 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.20987 | 0.07724 | 57.89273 |
+Best test accuaracy 0.5115445859872612 in epoch 24
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 26/60===
+Mining clean data by class-aware loss-guided split...
+1.0/600.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.02734 | 0.92419 | 0.01650 |    6.25000 |
+| 341/1024    | 0.90417 | 0.84106 | 0.00996 |    6.33325 |
+| 682/1024    | 0.53788 | 0.48870 | 0.00766 |    6.41650 |
+| 1023/1024   | 0.95380 | 0.87039 | 0.01283 |    6.49976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.83659 | 0.76001 | 0.01201 |    6.37488 | 2414.29619 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.35689 | 0.60938 |
+| 78/157      | 1.74351 | 0.54688 |
+| 156/157     | 1.15035 | 0.68750 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.73106 | 0.52548 | 64.07448 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.24977 | 0.04688 |
+| 70/141      | 3.90583 | 0.06250 |
+| 140/141     | 4.06227 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.02540 | 0.07258 | 57.96105 |
+Best test accuaracy 0.5254777070063694 in epoch 26
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 27/60===
+Mining clean data by class-aware loss-guided split...
+3.0/600.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.42918 | 0.40001 | 0.00449 |    6.50000 |
+| 341/1024    | 1.07300 | 0.96869 | 0.01584 |    6.58325 |
+| 682/1024    | 0.65479 | 0.59794 | 0.00853 |    6.66650 |
+| 1023/1024   | 0.13481 | 0.08317 | 0.00765 |    6.74976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.80341 | 0.72614 | 0.01166 |    6.62488 | 2407.99371 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.69200 | 0.54688 |
+| 78/157      | 1.99306 | 0.53125 |
+| 156/157     | 1.58665 | 0.62500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.86929 | 0.52697 | 63.44635 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.80295 | 0.04688 |
+| 70/141      | 4.70231 | 0.06250 |
+| 140/141     | 4.72416 | 0.05000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.68096 | 0.06496 | 57.44673 |
+Best test accuaracy 0.5269705414012739 in epoch 27
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 28/60===
+Mining clean data by class-aware loss-guided split...
+3.0/600.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.09306 | 0.97417 | 0.01761 |    6.75000 |
+| 341/1024    | 0.80068 | 0.72299 | 0.01137 |    6.83325 |
+| 682/1024    | 1.37369 | 1.25693 | 0.01688 |    6.91650 |
+| 1023/1024   | 1.11094 | 1.02003 | 0.01299 |    6.99976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.82210 | 0.73973 | 0.01198 |    6.87488 | 2407.26612 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.59873 | 0.64062 |
+| 78/157      | 1.74983 | 0.56250 |
+| 156/157     | 1.49197 | 0.62500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.79836 | 0.52199 | 63.59278 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.68205 | 0.12500 |
+| 70/141      | 3.58432 | 0.14062 |
+| 140/141     | 3.79421 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.70021 | 0.10095 | 57.51684 |
+Best test accuaracy 0.5269705414012739 in epoch 27
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 29/60===
+Mining clean data by class-aware loss-guided split...
+2.0/600.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 1.33605 | 1.20622 | 0.01855 |    7.00000 |
+| 341/1024    | 0.70298 | 0.65650 | 0.00656 |    7.08325 |
+| 682/1024    | 1.32179 | 1.19290 | 0.01799 |    7.16650 |
+| 1023/1024   | 1.32576 | 1.22107 | 0.01444 |    7.24976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.82405 | 0.73941 | 0.01188 |    7.12488 | 2410.77730 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.54970 | 0.65625 |
+| 78/157      | 1.87482 | 0.51562 |
+| 156/157     | 1.60270 | 0.50000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.78742 | 0.51742 | 64.24653 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.71248 | 0.09375 |
+| 70/141      | 3.72072 | 0.04688 |
+| 140/141     | 3.85197 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.74217 | 0.07591 | 57.96449 |
+Best test accuaracy 0.5269705414012739 in epoch 27
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 30/60===
+Mining clean data by class-aware loss-guided split...
+2.0/600.0 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.75049 | 0.68580 | 0.00892 |    7.25000 |
+| 341/1024    | 1.13709 | 1.02441 | 0.01536 |    7.33325 |
+| 682/1024    | 1.17260 | 1.06229 | 0.01487 |    7.41650 |
+| 1023/1024   | 0.59577 | 0.54754 | 0.00643 |    7.49976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 0.81883 | 0.73254 | 0.01170 |    7.37488 | 2414.95286 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.69060 | 0.60938 |
+| 78/157      | 1.89833 | 0.54688 |
+| 156/157     | 1.78954 | 0.43750 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.86320 | 0.52000 | 63.95383 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 4.17703 | 0.10938 |
+| 70/141      | 4.13339 | 0.07812 |
+| 140/141     | 4.20792 | 0.12500 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 4.13201 | 0.07934 | 57.88060 |
+Best test accuaracy 0.5269705414012739 in epoch 27
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 31/60===
+Mining clean data by class-agnostic loss-guided split...
+214.0/25000 poisoned samples in clean data pool
+MixMatch training...
+|-------------|---------|---------|---------|------------|
+| Iteration   |    loss |   xloss |   uloss |   lambda_u |
+|-------------|---------|---------|---------|------------|
+| 0/1024      | 0.91641 | 0.85973 | 0.00756 |    7.50000 |
+| 341/1024    | 1.56040 | 1.42465 | 0.01790 |    7.58325 |
+| 682/1024    | 0.49912 | 0.43548 | 0.00830 |    7.66650 |
+| 1023/1024   | 1.03439 | 0.96936 | 0.00839 |    7.74976 |
+MixMatch training summary:
+|---------|---------|---------|------------|------------|
+|    loss |   xloss |   uloss |   lambda_u |       time |
+|---------|---------|---------|------------|------------|
+| 1.10420 | 1.00023 | 0.01364 |    7.62488 | 2410.98798 |
+Test model on clean data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/157       | 1.44713 | 0.64062 |
+| 78/157      | 1.49842 | 0.57812 |
+| 156/157     | 1.23376 | 0.50000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 1.55016 | 0.58469 | 63.44174 |
+Test model on poison data...
+|-------------|---------|---------|
+| Iteration   |    loss |     acc |
+|-------------|---------|---------|
+| 0/141       | 3.49637 | 0.10938 |
+| 70/141      | 3.59150 | 0.10938 |
+| 140/141     | 3.58708 | 0.15000 |
+Linear test summary:
+|---------|---------|----------|
+|    loss |     acc |     time |
+|---------|---------|----------|
+| 3.54231 | 0.07852 | 57.42681 |
+Best test accuaracy 0.5846934713375797 in epoch 31
+Save the best model to ./storage\baseline_asd\checkpoint\best_model.pt
+Save the latest model to ./storage\baseline_asd\checkpoint\latest_model.pt
+===Epoch: 32/60===
